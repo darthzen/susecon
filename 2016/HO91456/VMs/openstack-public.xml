@@ -1,0 +1,7 @@
+<network>
+  <name>openstack-public</name>
+  <forward mode='route'/>
+  <bridge name='virbr126' stp='on' delay='0' />
+  <ip address='192.168.126.1' netmask='255.255.255.0'>
+  </ip>
+</network>
