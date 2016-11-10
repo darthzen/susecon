@@ -1,0 +1,14 @@
+<network>
+  <name>salt-advanced</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:f1:a4:cf'/>
+  <domain name='salt-advanced'/>
+  <ip address='192.168.14.1' netmask='255.255.255.0'>
+  </ip>
+</network>
+
