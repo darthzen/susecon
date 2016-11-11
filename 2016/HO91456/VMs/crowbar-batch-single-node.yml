@@ -1,0 +1,281 @@
+---
+proposals:
+- barclamp: crowbar
+  attributes:
+    instances:
+      ganglia: []
+      nagios: []
+      provisioner:
+      - "/var/lib/crowbar/config/provisioner.json"
+      network:
+      - "/var/lib/crowbar/config/network.json"
+      dns:
+      - "/var/lib/crowbar/config/dns.json"
+    realm: SUSE OpenStack Cloud Admin Server
+    users:
+      machine-install:
+        password: 058cd7531d36d725bf25c9928b4aa704a7f53eedf0351b903e19e53bfd6320772d52b82971b407206535078742026735f462baa1b3c945fd8f326aff70d44369
+  deployment:
+    elements:
+      crowbar:
+      - cloud6-crowbar.ash4d.com
+- barclamp: deployer
+  attributes:
+  deployment:
+    elements:
+      deployer-client:
+      - cloud6-crowbar.ash4d.com
+      - d52-54-00-7c-5c-88.ash4d.com
+      - "@@cloud6-node1@@"
+- barclamp: provisioner
+  attributes:
+    timezone: America/Chicago
+  deployment:
+    elements:
+      provisioner-server:
+      - cloud6-crowbar.ash4d.com
+      provisioner-base:
+      - cloud6-crowbar.ash4d.com
+      - d52-54-00-7c-5c-88.ash4d.com
+      - "@@cloud6-node1@@"
+      provisioner-bootdisk-finder:
+      - cloud6-crowbar.ash4d.com
+      - "@@cloud6-node1@@"
+- barclamp: ipmi
+  attributes:
+  deployment:
+    elements:
+      ipmi-discover:
+      - cloud6-crowbar.ash4d.com
+      - d52-54-00-7c-5c-88.ash4d.com
+      - "@@cloud6-node1@@"
+      ipmi-configure:
+      - cloud6-crowbar.ash4d.com
+      - d52-54-00-7c-5c-88.ash4d.com
+      - "@@cloud6-node1@@"
+      bmc-nat-router:
+      - cloud6-crowbar.ash4d.com
+      bmc-nat-client:
+      - d52-54-00-7c-5c-88.ash4d.com
+      - "@@cloud6-node1@@"
+- barclamp: network
+  wipe_attributes:
+    - interface_map
+  attributes:
+    teaming:
+      mode: 5
+    conduit_map:
+    - conduit_list:
+        intf0:
+          if_list:
+          - "?1g1"
+        intf1:
+          if_list:
+          - "?1g2"
+        intf2:
+          if_list:
+          - "?1g3"
+      pattern: dual/.*/.*
+    networks:
+      public:
+        conduit: intf2
+        use_vlan: false
+        ranges:
+          dhcp:
+            end: 192.168.126.127
+            start: 192.168.126.50
+          host:
+            start: 192.168.126.3
+            end: 192.168.126.49
+      nova_fixed:
+        ranges:
+          router:
+            end: 192.168.123.49
+            start: 192.168.123.1
+          dhcp:
+            start: 192.168.123.50
+            end: 192.168.123.200
+      nova_floating:
+        conduit: intf2
+        use_vlan: false
+        subnet: 192.168.126.0
+        netmask: 255.255.255.0
+        ranges:
+          host:
+            end: 192.168.126.191
+      bmc_vlan:
+        conduit: intf0
+      os_sdn:
+        vlan: 700
+  deployment:
+    elements:
+      switch_config:
+      - cloud6-crowbar.ash4d.com
+      network:
+      - cloud6-crowbar.ash4d.com
+      - d52-54-00-7c-5c-88.ash4d.com
+      - "@@cloud6-node1@@"
+- barclamp: dns
+  attributes:
+    domain: ash4d.com
+    forwarders:
+    - 192.168.124.1
+  deployment:
+    elements:
+      dns-server:
+      - cloud6-crowbar.ash4d.com
+      - "@@cloud6-node1@@"
+      dns-client:
+      - cloud6-crowbar.ash4d.com
+      - "@@cloud6-node1@@"
+- barclamp: logging
+  attributes:
+  deployment:
+    elements:
+      logging-server:
+      - cloud6-crowbar.ash4d.com
+      logging-client:
+      - d52-54-00-7c-5c-88.ash4d.com
+      - "@@cloud6-node1@@"
+- barclamp: ntp
+  attributes:
+    external_servers:
+    - 173.255.203.87
+    - 171.66.97.126
+    - 108.61.73.244
+  deployment:
+    elements:
+      ntp-server:
+      - cloud6-crowbar.ash4d.com
+      - "@@cloud6-node1@@"
+      ntp-client: []
+# WARNING: no proposals exist for pacemaker barclamp
+# WARNING: no proposals exist for nfs_client barclamp
+# WARNING: no proposals exist for suse_manager_client barclamp
+- barclamp: database
+  attributes:
+  deployment:
+    elements:
+      database-server:
+      - "@@cloud6-node1@@"
+- barclamp: rabbitmq
+  attributes:
+    password: sLYUJ9D2mKEi
+    trove:
+      password: E148Pjo4vAhc
+  deployment:
+    elements:
+      rabbitmq-server:
+      - "@@cloud6-node1@@"
+- barclamp: keystone
+  attributes:
+    database_instance: default
+    rabbitmq_instance: default
+    db:
+      password: uRhHwbo9M1Ql
+    service:
+      token: SAlUkuqsPbQc
+  deployment:
+    elements:
+      keystone-server:
+      - "@@cloud6-node1@@"
+# WARNING: no proposals exist for ceph barclamp
+# WARNING: no proposals exist for swift barclamp
+- barclamp: glance
+  attributes:
+    service_password: uzi6XnnZCU4U
+    db:
+      password: jhfZM2RqxZHs
+    keystone_instance: default
+    database_instance: default
+    rabbitmq_instance: default
+  deployment:
+    elements:
+      glance-server:
+      - "@@cloud6-node1@@"
+- barclamp: cinder
+  attributes:
+    rabbitmq_instance: default
+    keystone_instance: default
+    glance_instance: default
+    database_instance: default
+    service_password: w31lEw38P4hs
+    db:
+      password: LezE384YyEes
+  deployment:
+    elements:
+      cinder-controller:
+      - "@@cloud6-node1@@"
+      cinder-volume:
+      - "@@cloud6-node1@@"
+- barclamp: neutron
+  attributes:
+    service_password: z5DKdBC92U0D
+    rabbitmq_instance: default
+    keystone_instance: default
+    ml2_type_drivers:
+    - vxlan
+    ml2_type_drivers_default_provider_network: vxlan
+    ml2_type_drivers_default_tenant_network: vxlan
+    database_instance: default
+    db:
+      password: nmR5tqBQRTCb
+  deployment:
+    elements:
+      neutron-server:
+      - "@@cloud6-node1@@"
+      neutron-network:
+      - "@@cloud6-node1@@"
+- barclamp: nova
+  attributes:
+    service_password: gmJWUjV113qo
+    neutron_metadata_proxy_shared_secret: fy9rMFJr82LH
+    database_instance: default
+    rabbitmq_instance: default
+    keystone_instance: default
+    glance_instance: default
+    cinder_instance: default
+    neutron_instance: default
+    itxt_instance: ''
+    db:
+      password: xdn9tSi4FMAQ
+  deployment:
+    elements:
+      nova-controller:
+      - "@@cloud6-node1@@"
+      nova-compute-hyperv: []
+      nova-compute-kvm: []
+      nova-compute-qemu: []
+      nova-compute-xen: []
+      nova-compute-docker:
+      - "@@cloud6-node1@@"
+- barclamp: horizon
+  attributes:
+    nova_instance: default
+    keystone_instance: default
+    database_instance: default
+    db:
+      password: rS7dUjh9d4vQ
+  deployment:
+    elements:
+      horizon-server:
+      - "@@cloud6-node1@@"
+- barclamp: heat
+  attributes:
+    rabbitmq_instance: default
+    database_instance: default
+    stack_domain_admin_password: OxwpLZ0YJPo3
+    keystone_instance: default
+    service_password: V3yhkeo8hbv1
+    auth_encryption_key: DbnQG4Z5kiIrseZqSvhYyZ4gZcJ5QcoCjvt9
+    db:
+      password: 3DDq4YGcwhh9
+  deployment:
+    elements:
+      heat-server:
+      - "@@cloud6-node1@@"
+# WARNING: no proposals exist for ceilometer barclamp
+# WARNING: no proposals exist for manila barclamp
+# WARNING: no proposals exist for updater barclamp
+# WARNING: no proposals exist for trove barclamp
+# WARNING: no proposals exist for tempest barclamp
